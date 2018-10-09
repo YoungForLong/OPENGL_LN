@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 #include <glad\glad.h>
+#include <initializer_list>
+#include <vector>
 
 namespace OPENGL_LN
 {
@@ -17,9 +19,13 @@ namespace OPENGL_LN
 		TextureLN();
 		void loadImg(const char* path);
 		void flushSingleImgIntoBuffer(const char* path);
+		void flushMixImgIntoBuffer(const std::initializer_list<std::string> pathList);
+		virtual void tick();
+		void clearTextureCache();
+		unsigned int mixNum() const { return _textureArr.size(); }
 	private:
 		unsigned char* _data;
 		ImageObj _image;
-		GLuint _texture;
+		std::vector<GLuint> _textureArr;
 	};
 }

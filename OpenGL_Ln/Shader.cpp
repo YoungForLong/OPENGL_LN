@@ -7,8 +7,9 @@
 #include <vector>
 
 
-Shader::Shader(const char * vertexShaderFile, const char * fragmentShaderFile):
-	_shaderProgram(-1)
+OPENGL_LN::Shader::Shader(const char * vertexShaderFile, const char * fragmentShaderFile):
+	_shaderProgram(-1),
+	_source(NULL)
 {
 	const GLchar* vertexShaderSourec;
 	const GLchar* fragmentShaderSource;
@@ -54,24 +55,43 @@ Shader::Shader(const char * vertexShaderFile, const char * fragmentShaderFile):
 		glGetProgramInfoLog(_shaderProgram, 512, NULL, info);
 		std::cout << "Err: PROGRAM::SHADER::LINK_FAILED\n" << info << std::endl;
 	}
+
+	glDeleteShader(vertexShader);
+	glDeleteShader(fragmentShader);
 }
 
-void Shader::setVal(const std::string & name, float value) const
+OPENGL_LN::Shader::~Shader()
+{
+	if (_source)
+		delete(_source);
+}
+
+void OPENGL_LN::Shader::setVal(const std::string & name, float value) const
 {
 	SET_VAL(1f)(glGetUniformLocation(_shaderProgram, name.c_str()), value);
 }
 
-void Shader::setVal(const std::string & name, int value) const
+void OPENGL_LN::Shader::setVal(const std::string & name, int value) const
 {
 	SET_VAL(1i)(glGetUniformLocation(_shaderProgram, name.c_str()), value);
 }
 
-void Shader::setVal(const std::string & name, GLsizei count, const float * argv) const
+void OPENGL_LN::Shader::setVal(const std::string & name, GLsizei count, const float * argv) const
 {
 	SET_VAL(1fv)(glGetUniformLocation(_shaderProgram, name.c_str()), count, argv);
 }
 
-const char * Shader::getFileData(const char * path)
+void OPENGL_LN::Shader::setTrans(const std::string & name, const float * matrix)
+{
+	glUniformMatrix4fv(glGetUniformLocation(_shaderProgram, name.c_str()), 1, GL_FALSE, matrix);
+}
+
+void OPENGL_LN::Shader::use()
+{
+	glUseProgram(_shaderProgram);
+}
+
+const char * OPENGL_LN::Shader::getFileData(const char * path)
 {
 	char real_path[MAX_PATH] = { 0 };
 	strcpy_s(real_path, path);
@@ -81,23 +101,19 @@ const char * Shader::getFileData(const char * path)
 	strcpy_s(real_path, prefix);
 	strcat_s(real_path, path);
 #endif
-	std::string ret;
-	std::ifstream file;
-	file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-
-	try
+	FILE* infile;
+	fopen_s(&infile, real_path, "rb");
+	if (!infile)
 	{
-		file.open(real_path);
-		std::stringstream file_stream;
-		file_stream << file.rdbuf();
-		file.close();
-		ret = file_stream.str();
+		return NULL;
 	}
-	catch(std::ifstream::failure e)
-	{
-		std::cout << "Err: Failed to load file" << std::endl;
-		std::cout << e.code() << std::endl;
-	}
+	fseek(infile, 0, SEEK_END);
+	int len = ftell(infile);
+	fseek(infile, 0, SEEK_SET);
 
-	return ret.c_str();
+	_source = new GLchar[len + 1];
+	fread(_source, 1, len, infile);
+	fclose(infile);
+	_source[len] = 0;
+	return const_cast<const GLchar *>(_source);
 }

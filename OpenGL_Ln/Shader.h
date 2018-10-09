@@ -8,18 +8,24 @@
 #define INVALID_SHADER_PROGRAM_ID -1
 #define SET_VAL(a) (glUniform##a)
 
-class Shader
+namespace OPENGL_LN
 {
-public:
-	Shader(const char* vertexShaderFile = DEFAULT_V_SHADER, const char* fragmentShaderFile = DEFAULT_F_SHADER);
+	class Shader
+	{
+	public:
+		Shader(const char* vertexShaderFile = DEFAULT_V_SHADER, const char* fragmentShaderFile = DEFAULT_F_SHADER);
+		~Shader();
+		void setVal(const std::string& name, float value = 0.0f) const;
+		void setVal(const std::string& name, int value = 0) const;
+		void setVal(const std::string& name, GLsizei count, const float* argv) const;
+		void setTrans(const std::string& name, const float* matrix);
 
-	void setVal(const std::string& name, float value = 0.0f) const;
-	void setVal(const std::string& name, int value = 0) const;
-	void setVal(const std::string& name, GLsizei count, const float* argv) const;
+		void use();
 
-	
-private:
-	const char* getFileData(const char * path);
-	
-	int _shaderProgram;
-};
+		int getShaderId() const { return _shaderProgram; }
+	private:
+		const char* getFileData(const char * path);
+		GLchar* _source;
+		int _shaderProgram;
+	};
+}
