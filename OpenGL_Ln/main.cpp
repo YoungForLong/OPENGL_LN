@@ -56,13 +56,41 @@ static const GLchar* getFileData(const char * path)
 	return const_cast<const GLchar *>(source);
 }
 
-glm::mat4 getTransform(const float dither)
+glm::mat4 localTransform(const float dither)
 {
+	// local
+	glm::mat4 model;
+	model = glm::rotate(model, dither * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+	return model;
+}
+
+glm::mat4 cameraTransform(const glm::vec3& pos)
+{
+	// camera
+	glm::mat4 camera;
+	camera = glm::translate(camera, (glm::vec3(0.0f, 0.0f, 0.0f) - pos));
+	return camera;
+}
+
+glm::mat4 projectionTransform()
+{
+	// projection
+	glm::mat4 projection;
+	projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 10.0f);
+	return projection;
+}
+
+glm::vec4 origin(0.0f, 0.0f, 6.0f, 1.0f);
+glm::vec3 genCameraPos()
+{
+	auto t = glfwGetTime();
 	glm::mat4 trans;
-	trans = glm::rotate(trans, float(dither), glm::vec3(0.0f, 0.0f, 1.0f));
-	trans = glm::translate(trans, glm::vec3(0.5f, 0.5f, 0.0f));
-	trans = glm::scale(trans, glm::vec3(0.5f, 0.5f, 0.5f));
-	return trans;
+	trans = glm::rotate(trans, (float)(glm::radians(t * 10)), glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::vec4 ret = trans * origin;
+
+	auto v3ret = glm::vec3(ret.x, ret.y, ret.z);
+	std::cout << v3ret.length() << std::endl;
+	return v3ret;
 }
 
 int main()
@@ -73,7 +101,7 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	GLFWwindow* window = glfwCreateWindow(1080, 720, "GL_LN", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(720, 720, "GL_LN", NULL, NULL);
 
 	if (window == NULL)
 	{
@@ -98,16 +126,56 @@ int main()
 	const GLchar* fragmentShaderSource = getFileData("fragment.glsl");
 
 	float vertices[] = {
-		// positions          // colors           // texture coords
-		0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
-		0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
-		-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
-		-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left 
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+		0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 	};
-	unsigned int indices[] = {
-		0, 1, 3, // first triangle
-		1, 2, 3  // second triangle
-	};
+	
+	/*unsigned int indices[] = {
+		0, 1, 3,
+		1, 0, 2,
+		1, 2, 3,
+		2, 0, 3
+	};*/
+
 	unsigned int VBO, VAO, EBO;
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -118,42 +186,29 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	// position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_TRUE, 8 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_TRUE, 5 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
-	// color attribute
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_TRUE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
 	// texture coord attribute
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_TRUE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
 
 	OPENGL_LN::TextureLN tln = OPENGL_LN::TextureLN();
 	tln.clearTextureCache();
-	tln.flushMixImgIntoBuffer({ "test.jpg", "test_head.png"});
+	tln.flushSingleImgIntoBuffer("test.jpg");
 
 	OPENGL_LN::Shader sr = OPENGL_LN::Shader("vertex.glsl", "fragment.glsl");
-
-	// @param 1 :从头开始读取； 2：3个顶点； 3：顶点数据类型；4：是否归一化数据；5：数据大小； 6：第一个顶点的偏移量
-	// 顶点
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	// 颜色
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-	// texture采样点
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	glEnableVertexAttribArray(2);
 
 	float deltaTime = 0;
 	float curT = glfwGetTime();
 	float lastT = curT;
 	sr.use();
 	sr.setVal("texture1", 0);
-	sr.setVal("texture2", 1);
+
+	glEnable(GL_DEPTH_TEST);
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -161,7 +216,7 @@ int main()
 
 		// 渲染
 		glClearColor(1.0f, 1.0f, 0.0f, 1.0f); // 设置屏幕颜色
-		glClear(GL_COLOR_BUFFER_BIT); // 清屏
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // 清屏
 
 
 		curT = glfwGetTime();
@@ -176,11 +231,15 @@ int main()
 		// render
 		tln.tick();
 		sr.use();
-		auto trans = getTransform(curT);
-		sr.setTrans("transform", glm::value_ptr(trans));
+		auto model = localTransform(0);
+		auto view = cameraTransform(genCameraPos());
+		auto projection = projectionTransform();
+		sr.setTrans("model", glm::value_ptr(model));
+		sr.setTrans("view", glm::value_ptr(view));
+		sr.setTrans("projection", glm::value_ptr(projection));
 
 		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawArrays(GL_TRIANGLES, 0, floor(sizeof(vertices)/sizeof(float)));
 		
 
 		// dky?
