@@ -1,12 +1,14 @@
 #include <glad\glad.h>
 #include <GLFW\glfw3.h>
 #include <iostream>
-#include "TextureLN.h"
-#include "Shader.h"
 #include "stb_image.h"
 #include <glm\glm.hpp>
 #include <glm\gtc\matrix_transform.hpp>
 #include <glm\gtc\type_ptr.hpp>
+
+#include "TextureLN.h"
+#include "Shader.h"
+#include "Camera.h"
 
 #ifdef linux
 #ifndef MAX_PATH
@@ -16,6 +18,7 @@
 
 #define FPS 30
 #define DEFAULT_DELTA 0.0333f
+#define ORIGIN_VEC_3 glm::vec3(0.0f, 0.0f, 0.0f) 
 
 void framebuffer_size_callback(GLFWwindow* window, int w, int h) 
 {
@@ -27,6 +30,8 @@ void processInput(GLFWwindow* window)
 	{
 		glfwSetWindowShouldClose(window, true);
 	}
+
+	
 }
 
 static const GLchar* getFileData(const char * path)
@@ -64,14 +69,6 @@ glm::mat4 localTransform(const float dither)
 	return model;
 }
 
-glm::mat4 cameraTransform(const glm::vec3& pos)
-{
-	// camera
-	glm::mat4 camera;
-	camera = glm::translate(camera, (glm::vec3(0.0f, 0.0f, 0.0f) - pos));
-	return camera;
-}
-
 glm::mat4 projectionTransform()
 {
 	// projection
@@ -80,17 +77,11 @@ glm::mat4 projectionTransform()
 	return projection;
 }
 
-glm::vec4 origin(0.0f, 0.0f, 6.0f, 1.0f);
+glm::vec4 origin(0.0f, 0.0f, 10.0f, 0.0f);
 glm::vec3 genCameraPos()
 {
 	auto t = glfwGetTime();
-	glm::mat4 trans;
-	trans = glm::rotate(trans, (float)(glm::radians(t * 10)), glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::vec4 ret = trans * origin;
-
-	auto v3ret = glm::vec3(ret.x, ret.y, ret.z);
-	std::cout << v3ret.length() << std::endl;
-	return v3ret;
+	return glm::vec3(sin(t) * 10, 0.0f, cos(t) * 10);
 }
 
 int main()
@@ -231,8 +222,11 @@ int main()
 		// render
 		tln.tick();
 		sr.use();
+		
+		auto cameraPos = genCameraPos();
+		OPENGL_LN::Camera ca(cameraPos);
 		auto model = localTransform(0);
-		auto view = cameraTransform(genCameraPos());
+		auto view = ca.lookAt(ORIGIN_VEC_3);
 		auto projection = projectionTransform();
 		sr.setTrans("model", glm::value_ptr(model));
 		sr.setTrans("view", glm::value_ptr(view));
