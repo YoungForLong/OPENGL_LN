@@ -62,7 +62,7 @@ void OPENGL_LN::TextureLN::flushMixImgIntoBuffer(const std::initializer_list<std
 	}
 }
 
-void OPENGL_LN::TextureLN::tick()
+void OPENGL_LN::TextureLN::tick(float dt)
 {
 	unsigned int order = 0;
 	for (auto iter = _textureArr.begin(); iter != _textureArr.end(); ++iter)

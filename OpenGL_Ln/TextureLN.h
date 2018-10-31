@@ -20,7 +20,7 @@ namespace OPENGL_LN
 		void loadImg(const char* path);
 		void flushSingleImgIntoBuffer(const char* path);
 		void flushMixImgIntoBuffer(const std::initializer_list<std::string> pathList);
-		virtual void tick();
+		virtual void tick(float dt);
 		void clearTextureCache();
 		unsigned int mixNum() const { return _textureArr.size(); }
 	private:

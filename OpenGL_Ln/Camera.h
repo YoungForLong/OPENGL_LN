@@ -5,6 +5,8 @@
 
 #define DEFAULT_CAMERA_POS (glm::vec3(0.0f, 0.0f, 0.0f))
 #define DEFAULT_TARGET_POS (glm::vec3(0.0f, 0.0f, -1.0f))
+#define CAMERA_SPEED float(2.5f)
+#define CAMERA_SENSITIVITY 0.02f
 
 namespace OPENGL_LN
 {
@@ -30,6 +32,11 @@ namespace OPENGL_LN
 		glm::mat4 lookAt(const glm::vec3& target);
 
 		glm::mat4 getCurTrans();
+
+		bool handleKeyboardEvent(void* keyVal);
+		bool handleMouseEvent(void* posVal);
+
+		virtual void tick(float dt);
 	public:
 		static glm::vec3 ORIGIN_Y;
 	protected:
@@ -39,5 +46,8 @@ namespace OPENGL_LN
 		glm::vec3 _up;
 		glm::vec3 _front;
 		EulerAngle _euler;
+		float _curSpeed;
+		glm::vec2 _lastMousePos;
+		bool _firstGainFocus;
 	};
 }

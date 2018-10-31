@@ -9,6 +9,8 @@
 #include "TextureLN.h"
 #include "Shader.h"
 #include "Camera.h"
+#include "EventRegisterMng.h"
+#include <time.h>
 
 #ifdef linux
 #ifndef MAX_PATH
@@ -19,19 +21,50 @@
 #define FPS 30
 #define DEFAULT_DELTA 0.0333f
 #define ORIGIN_VEC_3 glm::vec3(0.0f, 0.0f, 0.0f) 
+#define GET_KEY_VOID_VAL(__key) static_cast<void*>(&__key)
+
 
 void framebuffer_size_callback(GLFWwindow* window, int w, int h) 
 {
 	glViewport(0, 0, w, h);
 }
-void processInput(GLFWwindow* window) 
+
+void mouseCallBack(GLFWwindow* winddow, double xpos, double ypos)
+{
+	double pos[] = { xpos, ypos };
+	EventRegisterMng::instance()->dispatchEvent(EventTypes::EVENT_MOUSE, GET_KEY_VOID_VAL(pos));
+}
+
+void processInput(GLFWwindow* window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
 		glfwSetWindowShouldClose(window, true);
 	}
 
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+	{
+		int key = GLFW_KEY_W;
+		EventRegisterMng::instance()->dispatchEvent(EventTypes::EVENT_KEYBOARD, GET_KEY_VOID_VAL(key));
+	}
+		
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+	{
+		int key = GLFW_KEY_S;
+		EventRegisterMng::instance()->dispatchEvent(EventTypes::EVENT_KEYBOARD, GET_KEY_VOID_VAL(key));
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+	{
+		int key = GLFW_KEY_A;
+		EventRegisterMng::instance()->dispatchEvent(EventTypes::EVENT_KEYBOARD, GET_KEY_VOID_VAL(key));
+	}
 	
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+	{
+		int key = GLFW_KEY_D;
+		EventRegisterMng::instance()->dispatchEvent(EventTypes::EVENT_KEYBOARD, GET_KEY_VOID_VAL(key));
+	}
 }
 
 static const GLchar* getFileData(const char * path)
@@ -61,10 +94,11 @@ static const GLchar* getFileData(const char * path)
 	return const_cast<const GLchar *>(source);
 }
 
-glm::mat4 localTransform(const float dither)
+glm::mat4 localTransform(const glm::vec3& offset, const float dither)
 {
 	// local
 	glm::mat4 model;
+	model = glm::translate(model, offset);
 	model = glm::rotate(model, dither * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
 	return model;
 }
@@ -73,7 +107,7 @@ glm::mat4 projectionTransform()
 {
 	// projection
 	glm::mat4 projection;
-	projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 10.0f);
+	projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
 	return projection;
 }
 
@@ -86,6 +120,8 @@ glm::vec3 genCameraPos()
 
 int main()
 {
+	srand(time(0));
+
 	stbi_set_flip_vertically_on_load(true);
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -93,6 +129,8 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	GLFWwindow* window = glfwCreateWindow(720, 720, "GL_LN", NULL, NULL);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetCursorPosCallback(window, mouseCallBack);
 
 	if (window == NULL)
 	{
@@ -199,7 +237,15 @@ int main()
 	sr.use();
 	sr.setVal("texture1", 0);
 
+	OPENGL_LN::Camera ca(glm::vec3(0, 0, 6));
+
 	glEnable(GL_DEPTH_TEST);
+
+	std::vector<glm::vec3> offsetArr;
+	for (int i = 0; i < 5; ++i)
+	{
+		offsetArr.push_back(glm::vec3(rand() % 10 - 5, rand() % 10 - 5, rand() % 10 - 5) / 2.3f);
+	}
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -220,21 +266,22 @@ int main()
 		// std::cout << floor(1 / deltaTime) << std::endl;
 
 		// render
-		tln.tick();
+		tln.tick(deltaTime);
+		ca.tick(deltaTime);
 		sr.use();
 		
-		auto cameraPos = genCameraPos();
-		OPENGL_LN::Camera ca(cameraPos);
-		auto model = localTransform(0);
-		auto view = ca.lookAt(ORIGIN_VEC_3);
+		auto view = ca.getCurTrans();
 		auto projection = projectionTransform();
-		sr.setTrans("model", glm::value_ptr(model));
-		sr.setTrans("view", glm::value_ptr(view));
-		sr.setTrans("projection", glm::value_ptr(projection));
 
-		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, floor(sizeof(vertices)/sizeof(float)));
-		
+		for (int i = 0; i < 5; ++i)
+		{
+			auto model = localTransform(offsetArr[i], curT + i * 200);
+			sr.setTrans("model", glm::value_ptr(model));
+			sr.setTrans("view", glm::value_ptr(view));
+			sr.setTrans("projection", glm::value_ptr(projection));
+			glBindVertexArray(VAO);
+			glDrawArrays(GL_TRIANGLES, 0, floor(sizeof(vertices) / sizeof(float)));
+		}
 
 		// dky?
 		glfwSwapBuffers(window);
