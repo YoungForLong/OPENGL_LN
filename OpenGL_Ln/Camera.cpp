@@ -90,9 +90,20 @@ bool OPENGL_LN::Camera::handleMouseEvent(void * posVal)
 	return true;
 }
 
+glm::vec3 OPENGL_LN::Camera::getCameraLookAt()
+{
+	calFront();
+	return _front;
+}
+
 void OPENGL_LN::Camera::tick(float dt)
 {
 	_curSpeed = CAMERA_SPEED * dt;
+}
+
+glm::vec3 OPENGL_LN::Camera::getPos() const
+{
+	return _pos;
 }
 
 void OPENGL_LN::Camera::calFront()

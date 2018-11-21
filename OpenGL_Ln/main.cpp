@@ -6,11 +6,14 @@
 #include <glm\gtc\matrix_transform.hpp>
 #include <glm\gtc\type_ptr.hpp>
 
-#include "TextureLN.h"
 #include "Shader.h"
 #include "Camera.h"
 #include "EventRegisterMng.h"
+#include "Light.h"
+#include "Material.h"
+#include<string>
 #include <time.h>
+#include "ModelLoader.h"
 
 #ifdef linux
 #ifndef MAX_PATH
@@ -20,7 +23,7 @@
 
 #define FPS 30
 #define DEFAULT_DELTA 0.0333f
-#define ORIGIN_VEC_3 glm::vec3(0.0f, 0.0f, 0.0f) 
+#define ORIGIN_VEC_3 glm::vec3(0.0f, 0.0f, 0.0f)
 #define GET_KEY_VOID_VAL(__key) static_cast<void*>(&__key)
 
 
@@ -155,47 +158,47 @@ int main()
 	const GLchar* fragmentShaderSource = getFileData("fragment.glsl");
 
 	float vertices[] = {
-		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-		0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,  0.0f, 0.0f,
+		0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,  1.0f, 0.0f,
+		0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,  1.0f, 1.0f,
+		0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,  1.0f, 1.0f,
+		-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,  0.0f, 0.0f,
 
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-		0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
+		0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,  1.0f, 0.0f,
+		0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,  1.0f, 1.0f,
+		0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,  1.0f, 1.0f,
+		-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,  0.0f, 1.0f,
+		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
 
-		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f,  1.0f, 0.0f,
+		-0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f,  1.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,  0.0f, 1.0f,
+		-0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
+		-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f,  1.0f, 0.0f,
 
-		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,  1.0f, 0.0f,
+		0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f,  1.0f, 1.0f,
+		0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,  0.0f, 1.0f,
+		0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,  0.0f, 1.0f,
+		0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
+		0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,  1.0f, 0.0f,
 
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,  0.0f, 1.0f,
+		0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,  1.0f, 1.0f,
+		0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,  1.0f, 0.0f,
+		0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,  1.0f, 0.0f,
+		-0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,  0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,  0.0f, 1.0f,
 
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
+		0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  1.0f, 1.0f,
+		0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
+		0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
+		-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,  0.0f, 0.0f,
+		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  0.0f, 1.0f
 	};
 	
 	/*unsigned int indices[] = {
@@ -219,40 +222,64 @@ int main()
 	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	// position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_TRUE, 5 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_TRUE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
-	// texture coord attribute
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	// normal vec
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
-
-	OPENGL_LN::TextureLN tln = OPENGL_LN::TextureLN();
-	tln.clearTextureCache();
-	tln.flushSingleImgIntoBuffer("test.jpg");
+	// texture coord attribute
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
 
 	OPENGL_LN::Shader sr = OPENGL_LN::Shader("vertex.glsl", "fragment.glsl");
 
 	float deltaTime = 0;
 	float curT = glfwGetTime();
 	float lastT = curT;
+
 	sr.use();
-	sr.setVal("texture1", 0);
 
 	OPENGL_LN::Camera ca(glm::vec3(0, 0, 6));
 
+	// set material
+	OPENGL_LN::Material material("material", 32.0f);
+	material.bindDiffuseMap("box_diffuse.png");
+	material.bindSpecularMap("box_specular.png");
+	material.applyMaterial(sr);
+	
 	glEnable(GL_DEPTH_TEST);
 
 	std::vector<glm::vec3> offsetArr;
-	for (int i = 0; i < 5; ++i)
+	for (int i = 0; i < 1; ++i)
 	{
 		offsetArr.push_back(glm::vec3(rand() % 10 - 5, rand() % 10 - 5, rand() % 10 - 5) / 2.3f);
 	}
+
+	OPENGL_LN::Light sunLt("sunLight",
+		glm::vec3(0.1f, 0.1f, 0.1f),
+		glm::vec3(0.2f, 0.2f, 0.2f),
+		glm::vec3(0.4f, 0.4f, 0.4f),
+		glm::vec3(2, 2, 2)
+	);
+	sunLt.applyLight(sr);
+
+	OPENGL_LN::Light pointLt("pointLight",
+		glm::vec3(0.2f, 0.2f, 0.2f),
+		glm::vec3(0.5f, 0.5f, 0.5f),
+		glm::vec3(1.0f, 1.0f, 1.0f),
+		glm::vec3(4.0f, 4.0f, 4.0f),
+		0.0f,
+		0.09f,
+		0.0032f
+	);
+	pointLt.applyLight(sr);
 
 	while (!glfwWindowShouldClose(window))
 	{
 		processInput(window);
 
 		// äÖÈ¾
-		glClearColor(1.0f, 1.0f, 0.0f, 1.0f); // ÉèÖÃÆÁÄ»ÑÕÉ«
+		glClearColor(0.1f, 0.1f, 0.1f, 1.0f); // ÉèÖÃÆÁÄ»ÑÕÉ«
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // ÇåÆÁ
 
 
@@ -266,14 +293,37 @@ int main()
 		// std::cout << floor(1 / deltaTime) << std::endl;
 
 		// render
-		tln.tick(deltaTime);
 		ca.tick(deltaTime);
+		material.tick(deltaTime);
 		sr.use();
-		
+		sr.setVal("time", curT);
+
 		auto view = ca.getCurTrans();
 		auto projection = projectionTransform();
 
-		for (int i = 0; i < 5; ++i)
+		// ¹âÕÕ
+		/*OPENGL_LN::Light lt(
+			"light",
+			glm::vec3(0.2f, 0.2f, 0.2f),
+			glm::vec3(0.5f, 0.5f, 0.5f),
+			glm::vec3(1.0f, 1.0f, 1.0f),
+			ca.getPos(),
+			ca.getCameraLookAt(),
+			glm::cos(glm::radians(12.5f)),
+			glm::cos(glm::radians(17.5f))
+		);*/
+		/*OPENGL_LN::Light lt("spotLight",
+			glm::vec3(0.2f, 0.2f, 0.2f),
+			glm::vec3(0.5f, 0.5f, 0.5f),
+			glm::vec3(1.0f, 1.0f, 1.0f),
+			glm::vec3(2, 2, 2)
+		);
+		lt.applyLight(sr);*/
+
+		auto caPos = ca.getPos();
+		sr.setVal("viewPos", caPos);
+
+		for (int i = 0; i < 1; ++i)
 		{
 			auto model = localTransform(offsetArr[i], curT + i * 200);
 			sr.setTrans("model", glm::value_ptr(model));

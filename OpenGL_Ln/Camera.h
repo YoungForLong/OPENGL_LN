@@ -36,7 +36,11 @@ namespace OPENGL_LN
 		bool handleKeyboardEvent(void* keyVal);
 		bool handleMouseEvent(void* posVal);
 
+		glm::vec3 getCameraLookAt();
+
 		virtual void tick(float dt);
+
+		glm::vec3 getPos() const;
 	public:
 		static glm::vec3 ORIGIN_Y;
 	protected:

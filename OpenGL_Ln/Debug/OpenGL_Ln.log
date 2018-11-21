@@ -1,5 +1,8 @@
-﻿  Camera.cpp
-e:\opengl_lib\opengl_prj\opengl_ln\opengl_ln\camera.cpp(86): warning C4244: “+=”: 从“double”转换到“float”，可能丢失数据
-e:\opengl_lib\opengl_prj\opengl_ln\opengl_ln\camera.cpp(88): warning C4244: “+=”: 从“double”转换到“float”，可能丢失数据
+﻿  main.cpp
+e:\opengl_lib\opengl_prj\opengl_ln\opengl_ln\main.cpp(126): warning C4244: “参数”: 从“time_t”转换到“unsigned int”，可能丢失数据
+e:\opengl_lib\opengl_prj\opengl_ln\opengl_ln\main.cpp(237): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+e:\opengl_lib\opengl_prj\opengl_ln\opengl_ln\main.cpp(286): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\opengl_lib\opengl_prj\opengl_ln\opengl_ln\main.cpp(291): warning C4244: “参数”: 从“float”转换到“DWORD”，可能丢失数据
+e:\opengl_lib\opengl_prj\opengl_ln\opengl_ln\main.cpp(333): warning C4244: “参数”: 从“double”转换到“GLsizei”，可能丢失数据
   OpenGL_Ln.vcxproj -> E:\OpenGL_Lib\opengl_prj\OpenGL_Ln\Debug\OpenGL_Ln.exe
   OpenGL_Ln.vcxproj -> E:\OpenGL_Lib\opengl_prj\OpenGL_Ln\Debug\OpenGL_Ln.pdb (Full PDB)

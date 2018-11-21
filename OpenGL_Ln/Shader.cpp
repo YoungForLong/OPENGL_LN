@@ -76,10 +76,17 @@ void OPENGL_LN::Shader::setVal(const std::string & name, int value) const
 	SET_VAL(1i)(glGetUniformLocation(_shaderProgram, name.c_str()), value);
 }
 
+void OPENGL_LN::Shader::setVal(const std::string & name, glm::vec3 value) const
+{
+	SET_VAL(3f)(glGetUniformLocation(_shaderProgram, name.c_str()), value.x, value.y, value.z);
+}
+
 void OPENGL_LN::Shader::setVal(const std::string & name, GLsizei count, const float * argv) const
 {
 	SET_VAL(1fv)(glGetUniformLocation(_shaderProgram, name.c_str()), count, argv);
 }
+
+
 
 void OPENGL_LN::Shader::setTrans(const std::string & name, const float * matrix)
 {
