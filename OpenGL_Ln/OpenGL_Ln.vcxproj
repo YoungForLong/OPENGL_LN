@@ -89,9 +89,10 @@
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalOptions>/await %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -152,6 +153,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="EventRegisterMng.cpp" />
     <ClCompile Include="glad.c" />
+    <ClCompile Include="IOUtils.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Material.cpp" />
@@ -168,6 +170,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="EventRegisterMng.h" />
     <ClInclude Include="EventTypes.h" />
+    <ClInclude Include="IOUtils.h" />
     <ClInclude Include="LerpFuncs.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Material.h" />

@@ -6,9 +6,9 @@
 #include <string>
 #include <functional>
 #include <unordered_map>
+
 #include "Singleton.h"
 
-typedef std::function<void(aiScene*)> CallBack;
 typedef unsigned int ModelKey;
 
 #define MODELMNG ModelMng::instance()
@@ -18,7 +18,7 @@ namespace OPENGL_LN
 	class Model;
 	class Mesh;
 
-	class ModelMng:public Singleton<ModelMng>
+	class ModelMng :public Singleton<ModelMng>
 	{
 	public:
 		ModelKey initOneModel();
@@ -33,7 +33,7 @@ namespace OPENGL_LN
 	public:
 		ModelLoader() = delete;
 		~ModelLoader() = delete;
-		void operator()(const char* path, const CallBack& succCall)
+		void operator()(const char* path, const LoadCallBack& succCall)
 		{
 			char real_path[MAX_PATH] = { 0 };
 			strcpy_s(real_path, path);
@@ -43,8 +43,10 @@ namespace OPENGL_LN
 			strcpy_s(real_path, prefix);
 			strcat_s(real_path, path);
 #endif
-			
-
+			Assimp::Importer importer;
+			auto pScene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
 		}
+
 	};
+
 }
