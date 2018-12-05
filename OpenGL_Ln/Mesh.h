@@ -27,6 +27,9 @@ namespace OPENGL_LN
 
 		void render(Shader* shader);
 
+	protected:
+		virtual void init();
+		unsigned int VAO, VBO, EBO;
 	public:
 		std::vector<Vertex> vertices_;
 		std::vector<unsigned int> indices_;
