@@ -11,7 +11,7 @@
 #include "EventRegisterMng.h"
 #include "Light.h"
 #include "Material.h"
-#include<string>
+#include <string>
 #include <time.h>
 #include "ModelLoader.h"
 

@@ -9,12 +9,15 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+
 #include <vector>
 #include <string>
 #include <unordered_map>
 #include <queue>
 
 #include "Singleton.h"
+#include "stb_image.h"
+
 #define THREAD_NUM 10
 
 namespace OPENGL_LN {
@@ -22,23 +25,23 @@ namespace OPENGL_LN {
 
 	enum IOType
 	{
-		Texture = 0x0001,
-		Model = 0x0002
+		IO_TEXTURE = 0x0001,
+		IO_MODEL = 0x0002
 	};
 
 	struct ImageObj;
-	typedef struct
+	typedef struct TransTexture
 	{
 		stbi_uc* data;
-		ImageObj image;
-	} TransTexture;
+		ImageObj* image;
+	};
 
-	typedef struct 
+	typedef struct IOObject
 	{
 		string file_path;
 		IOType type;
 		IOCallBack callback;
-	} IOObject;
+	};
 
 	class IOUtils :public Singleton<IOUtils>
 	{
@@ -47,7 +50,7 @@ namespace OPENGL_LN {
 		~IOUtils();
 	public:
 		const char* getFilePath(const char* filename);
-		void asyncLoad(const char* filename, IOCallBack cb);
+		void asyncLoad(const char* filename, IOCallBack&& cb);
 		IOType judgeFileType(const char* filename);
 		int fileHash(const char* filename);
 	protected:
@@ -63,4 +66,5 @@ namespace OPENGL_LN {
 		// put thread bottom
 		thread _threadPool[THREAD_NUM];
 	};
+#define IOMNG IOUtils::instance()
 }

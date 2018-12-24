@@ -39,7 +39,7 @@ OPENGL_LN::IOUtils::IOUtils()
 				}
 
 				mut.unlock();
-				if (obj->type == IOType::Model)
+				if (obj->type == IOType::IO_MODEL)
 				{
 					Assimp::Importer importer;
 
@@ -52,11 +52,11 @@ OPENGL_LN::IOUtils::IOUtils()
 					}
 					obj->callback(static_cast<const void*>(scene));
 				}
-				else if (obj->type == IOType::Texture)
+				else if (obj->type == IOType::IO_TEXTURE)
 				{
 					auto real_path = getFilePath(obj->file_path.c_str());
-					OPENGL_LN::ImageObj image;
-					stbi_uc* data = stbi_load(real_path, &(image._width), &(image._height), &(image._channelNum), 0);
+					OPENGL_LN::ImageObj* image = new OPENGL_LN::ImageObj;
+					stbi_uc* data = stbi_load(real_path, &(image->_width), &(image->_height), &(image->_channelNum), 0);
 					if (!data)
 					{
 						assert(0 && "Err: STB::IMAGE::LOAD::FAILED");
@@ -65,6 +65,9 @@ OPENGL_LN::IOUtils::IOUtils()
 					t->data = data;
 					t->image = image;
 					obj->callback(static_cast<const void*>(t));
+					stbi_image_free(data);
+					delete t;
+					t = NULL;
 				}
 			}
 		});
@@ -95,7 +98,7 @@ const char * IOUtils::getFilePath(const char * filename)
 	return real_path;
 }
 
-void OPENGL_LN::IOUtils::asyncLoad(const char * filename, IOCallBack cb)
+void OPENGL_LN::IOUtils::asyncLoad(const char * filename, IOCallBack&& cb)
 {
 	IOType type = this->judgeFileType(filename);
 	IOObject* obj = new IOObject;
@@ -134,9 +137,9 @@ OPENGL_LN::IOType OPENGL_LN::IOUtils::judgeFileType(const char * filename)
 
 	unordered_map<string, IOType> fileMap = 
 	{
-		{"png", Texture},
-		{"jpg", Texture},
-		{"obj", Model}
+		{"png", IO_TEXTURE},
+		{"jpg", IO_TEXTURE},
+		{"obj", IO_MODEL}
 	};
 
 	return fileMap[postfix];

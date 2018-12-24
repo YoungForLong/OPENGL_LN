@@ -24,9 +24,15 @@ namespace OPENGL_LN
 	{
 	public:
 		Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, std::vector<Texture>& textures);
+		Mesh(const std::vector<Vertex>&& vertices, const std::vector<unsigned int>&& indices, std::vector<Texture>&& textures);
+		Mesh(const Mesh& other) = delete;
+		const Mesh& operator=(const Mesh& other) = delete;
+		Mesh(Mesh&& other);
 
 		void render(Shader* shader);
-
+		
+		virtual void clone(Mesh& dest, Mesh& src);
+	
 	protected:
 		virtual void init();
 		unsigned int VAO, VBO, EBO;

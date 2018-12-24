@@ -10,9 +10,36 @@ OPENGL_LN::Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<uns
 	init();
 }
 
+OPENGL_LN::Mesh::Mesh(const std::vector<Vertex>&& vertices, const std::vector<unsigned int>&& indices, std::vector<Texture>&& textures):
+	vertices_(vertices),
+	indices_(indices),
+	textures_(textures)
+{
+	init();
+}
+
+OPENGL_LN::Mesh::Mesh(Mesh && other)
+{
+	this->vertices_ = std::move(other.vertices_);
+	this->indices_ = std::move(other.indices_);
+	this->textures_ = std::move(other.textures_);
+	this->init();
+}
+
 void OPENGL_LN::Mesh::render(Shader * shader)
 {
 
+}
+
+void OPENGL_LN::Mesh::clone(Mesh & dest, Mesh & src)
+{
+	dest.VAO = src.VAO;
+	dest.VBO = src.VBO;
+	dest.EBO = src.EBO;
+
+	dest.indices_ = std::move(src.indices_);
+	dest.vertices_ = std::move(src.vertices_);
+	dest.textures_ = std::move(src.textures_);
 }
 
 void OPENGL_LN::Mesh::init()
@@ -41,3 +68,5 @@ void OPENGL_LN::Mesh::init()
 
 	glBindVertexArray(0);
 }
+
+

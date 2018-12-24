@@ -2,9 +2,21 @@
 #include "stb_image.h"
 #include <iostream>
 
-OPENGL_LN::Texture::Texture()
+//OPENGL_LN::Texture::Texture()
+//{
+//	_data = NULL;
+//}
+
+OPENGL_LN::Texture::Texture(unsigned char * data)
 {
 	_data = NULL;
+	this->flushSingleImgIntoBuffer(data);
+}
+
+OPENGL_LN::Texture::Texture(const std::initializer_list<unsigned char*>& dataList)
+{
+	_data = NULL;
+	this->flushMixImgIntoBuffer(dataList);
 }
 
 OPENGL_LN::Texture::~Texture()
@@ -12,31 +24,31 @@ OPENGL_LN::Texture::~Texture()
 	this->clearTextureCache();
 }
 
-void OPENGL_LN::Texture::loadImg(const char* path)
-{
-	if (_data)
-	{
-		stbi_image_free(_data);
-		_data = NULL;
-	}
+//void OPENGL_LN::Texture::loadImg(const char* path)
+//{
+//	if (_data)
+//	{
+//		stbi_image_free(_data);
+//		_data = NULL;
+//	}
+//
+//	char real_path[MAX_PATH] = { 0 };
+//	strcpy_s(real_path, path);
+//#ifdef WIN32
+//	memset(real_path, 0, MAX_PATH);
+//	const char* prefix = "../Resources/";
+//	strcpy_s(real_path, prefix);
+//	strcat_s(real_path, path);
+//#endif
+//	_data = stbi_load(real_path, &(_image._width), &(_image._height), &(_image._channelNum), 0);
+//	if (!_data)
+//	{
+//		std::cout << "Err: STB::IMAGE::LOAD::FAILED" << std::endl;
+//	}
+//}
 
-	char real_path[MAX_PATH] = { 0 };
-	strcpy_s(real_path, path);
-#ifdef WIN32
-	memset(real_path, 0, MAX_PATH);
-	const char* prefix = "../Resources/";
-	strcpy_s(real_path, prefix);
-	strcat_s(real_path, path);
-#endif
-	_data = stbi_load(real_path, &(_image._width), &(_image._height), &(_image._channelNum), 0);
-	if (!_data)
-	{
-		std::cout << "Err: STB::IMAGE::LOAD::FAILED" << std::endl;
-	}
-}
 
-
-void OPENGL_LN::Texture::flushSingleImgIntoBuffer(const char* path)
+void OPENGL_LN::Texture::flushSingleImgIntoBuffer(unsigned char* data)
 {
 	GLuint texture;
 	glGenTextures(1, &texture);
@@ -47,7 +59,7 @@ void OPENGL_LN::Texture::flushSingleImgIntoBuffer(const char* path)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	this->loadImg(path);
+	_data = data;
 	if (_data)
 	{
 		auto color = _image._channelNum == 3 ? GL_RGB : GL_RGBA;
@@ -59,11 +71,11 @@ void OPENGL_LN::Texture::flushSingleImgIntoBuffer(const char* path)
 	_data = NULL;
 }
 
-void OPENGL_LN::Texture::flushMixImgIntoBuffer(const std::initializer_list<std::string> pathList)
+void OPENGL_LN::Texture::flushMixImgIntoBuffer(const std::initializer_list<unsigned char*>& pathList)
 {
 	for (auto iter = pathList.begin(); iter != pathList.end(); ++iter)
 	{
-		flushSingleImgIntoBuffer(iter->c_str());
+		flushSingleImgIntoBuffer(*iter);
 	}
 }
 
