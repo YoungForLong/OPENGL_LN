@@ -18,10 +18,12 @@ namespace OPENGL_LN
 	{
 	private:
 		TextureMng();
+		~TextureMng();
 	public:
 		unsigned int initOneTexture(const char* filename);
 		virtual void asyncLoad(const char* filename, const unsigned int id) override;
 		virtual void callBackHandleLoad(const void* any, const unsigned int id) override;
+	protected:
 		unsigned int genTextureId() { return _keyHash++; }
 	private:
 		unordered_map<unsigned int, Texture*> _textureContainer;

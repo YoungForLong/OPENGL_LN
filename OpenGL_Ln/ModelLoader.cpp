@@ -16,13 +16,14 @@ OPENGL_LN::Model * OPENGL_LN::ModelMng::getModelByKey(unsigned int key)
 	return nullptr;
 }
 
-void OPENGL_LN::ModelMng::asyncLoad(const char * filename)
+void OPENGL_LN::ModelMng::asyncLoad(const char * filename, unsigned int id)
 {
-	auto cb = std::bind(this, &OPENGL_LN::ModelMng::callBackHandleLoad);
-	IOMNG->asyncLoad(filename, std::move(cb));
+	IOMNG->asyncLoad(filename, [this, id](const void* any)->void {
+		this->callBackHandleLoad(any, id);
+	});
 }
 
-void OPENGL_LN::ModelMng::callBackHandleLoad(const void* any)
+void OPENGL_LN::ModelMng::callBackHandleLoad(const void* any, unsigned int id)
 {
 	auto scene = static_cast<const aiScene*>(any);
 

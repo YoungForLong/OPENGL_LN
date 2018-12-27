@@ -2,20 +2,23 @@
 #include "stb_image.h"
 #include <iostream>
 
-//OPENGL_LN::Texture::Texture()
-//{
-//	_data = NULL;
-//}
-
-OPENGL_LN::Texture::Texture(unsigned char * data)
+OPENGL_LN::Texture::Texture(const unsigned int id):
+	_id(id),
+	_data(NULL)
 {
-	_data = NULL;
+}
+
+OPENGL_LN::Texture::Texture(const unsigned int id, unsigned char * data):
+	_id(id),
+	_data(NULL)
+{
 	this->flushSingleImgIntoBuffer(data);
 }
 
-OPENGL_LN::Texture::Texture(const std::initializer_list<unsigned char*>& dataList)
+OPENGL_LN::Texture::Texture(const unsigned int id, const std::initializer_list<unsigned char*>& dataList):
+	_id(id),
+	_data(NULL)
 {
-	_data = NULL;
 	this->flushMixImgIntoBuffer(dataList);
 }
 
@@ -48,7 +51,7 @@ OPENGL_LN::Texture::~Texture()
 //}
 
 
-void OPENGL_LN::Texture::flushSingleImgIntoBuffer(unsigned char* data)
+void OPENGL_LN::Texture::flushSingleImgIntoBuffer(unsigned char* data, const ImageObj* image)
 {
 	GLuint texture;
 	glGenTextures(1, &texture);
@@ -67,16 +70,6 @@ void OPENGL_LN::Texture::flushSingleImgIntoBuffer(unsigned char* data)
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	this->_textureArr.push_back(texture);
-	stbi_image_free(_data);
-	_data = NULL;
-}
-
-void OPENGL_LN::Texture::flushMixImgIntoBuffer(const std::initializer_list<unsigned char*>& pathList)
-{
-	for (auto iter = pathList.begin(); iter != pathList.end(); ++iter)
-	{
-		flushSingleImgIntoBuffer(*iter);
-	}
 }
 
 void OPENGL_LN::Texture::tick(float dt)

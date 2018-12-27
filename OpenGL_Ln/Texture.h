@@ -16,17 +16,15 @@ namespace OPENGL_LN
 	class Texture
 	{
 	public:
-		Texture() = delete;
-		explicit Texture(unsigned char* data);
-		Texture(const std::initializer_list<unsigned char*>& dataList);
+		Texture(const unsigned int id);
+		explicit Texture(const unsigned int id, unsigned char* data);
+		Texture(const unsigned int id, const std::initializer_list<unsigned char*>& dataList);
 		virtual ~Texture();
 		// void loadImg(const char* path);
 		void clearTextureCache();
 		virtual void tick(float dt);
-		unsigned int mixNum() const { return _textureArr.size(); }
-	private:
-		void flushSingleImgIntoBuffer(unsigned char* data);
-		void flushMixImgIntoBuffer(const std::initializer_list<unsigned char*>& pathList);
+		inline unsigned int mixNum() const { return _textureArr.size(); }
+		void flushSingleImgIntoBuffer(unsigned char* data, const ImageObj* image);
 	private:
 		unsigned int _id;
 		unsigned char* _data;

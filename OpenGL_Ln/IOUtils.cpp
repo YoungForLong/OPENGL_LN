@@ -66,6 +66,9 @@ OPENGL_LN::IOUtils::IOUtils()
 					t->image = image;
 					obj->callback(static_cast<const void*>(t));
 					stbi_image_free(data);
+					delete image;
+					image = NULL;
+					t->image = NULL;
 					delete t;
 					t = NULL;
 				}

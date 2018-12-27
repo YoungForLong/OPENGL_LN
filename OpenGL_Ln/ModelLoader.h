@@ -26,8 +26,8 @@ namespace OPENGL_LN
 	public:
 		unsigned int initOneModel(const char* filename);
 		Model* getModelByKey(unsigned int key);
-		virtual void asyncLoad(const char* filename) override;
-		virtual void callBackHandleLoad(const void* any) override;
+		virtual void asyncLoad(const char* filename, unsigned int id) override;
+		virtual void callBackHandleLoad(const void* any, unsigned int id) override;
 		unsigned int genTextureId() { return _keyHash++; }
 	private:
 		std::unordered_map<unsigned int, Model*> _modelContainer;
