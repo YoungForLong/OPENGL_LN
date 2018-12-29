@@ -149,7 +149,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AsyncLoadObject.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="EventRegisterMng.cpp" />
     <ClCompile Include="glad.c" />
@@ -170,7 +169,7 @@
     <None Include="..\Resources\vertex.glsl" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AsyncLoadObject.h" />
+    <ClInclude Include="AsyncLoader.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="EventRegisterMng.h" />
     <ClInclude Include="EventTypes.h" />

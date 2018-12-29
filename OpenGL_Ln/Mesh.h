@@ -23,11 +23,10 @@ namespace OPENGL_LN
 	class Mesh
 	{
 	public:
-		Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, std::vector<Texture>& textures);
-		Mesh(const std::vector<Vertex>&& vertices, const std::vector<unsigned int>&& indices, std::vector<Texture>&& textures);
+		explicit Mesh(const std::vector<Vertex>&& vertices, const std::vector<unsigned int>&& indices, std::vector<unsigned int>&& textures);
 		Mesh(const Mesh& other) = delete;
 		const Mesh& operator=(const Mesh& other) = delete;
-		Mesh(Mesh&& other);
+		explicit Mesh(Mesh&& other);
 
 		void render(Shader* shader);
 		
@@ -39,6 +38,6 @@ namespace OPENGL_LN
 	public:
 		std::vector<Vertex> vertices_;
 		std::vector<unsigned int> indices_;
-		std::vector<Texture> textures_;
+		std::vector<unsigned int> textures_;
 	};
 }

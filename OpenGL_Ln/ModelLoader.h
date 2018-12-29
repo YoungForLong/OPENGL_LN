@@ -7,10 +7,11 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <mutex>
 
 #include "Singleton.h"
 #include "IOUtils.h"
-#include "AsyncLoadObject.h"
+#include "AsyncLoader.h"
 
 #define MODELMNG ModelMng::instance()
 
@@ -19,19 +20,13 @@ namespace OPENGL_LN
 	class Model;
 	class Mesh;
 
-	class ModelMng :public Singleton<ModelMng>, public AsyncLoadObject
+	class ModelMng :public Singleton<ModelMng>, public AsyncLoader<Model>
 	{
 	private:
 		ModelMng();
+		~ModelMng();
 	public:
-		unsigned int initOneModel(const char* filename);
-		Model* getModelByKey(unsigned int key);
-		virtual void asyncLoad(const char* filename, unsigned int id) override;
 		virtual void callBackHandleLoad(const void* any, unsigned int id) override;
-		unsigned int genTextureId() { return _keyHash++; }
-	private:
-		std::unordered_map<unsigned int, Model*> _modelContainer;
-		unsigned int _keyHash;
 	};
 
 }

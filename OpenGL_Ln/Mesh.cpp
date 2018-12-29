@@ -1,16 +1,7 @@
 #include "Mesh.h"
 #include "Texture.h"
 
-
-OPENGL_LN::Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, std::vector<Texture>& textures) :
-	vertices_(move(vertices)),
-	indices_(move(indices)),
-	textures_(move(textures))
-{
-	init();
-}
-
-OPENGL_LN::Mesh::Mesh(const std::vector<Vertex>&& vertices, const std::vector<unsigned int>&& indices, std::vector<Texture>&& textures):
+OPENGL_LN::Mesh::Mesh(const std::vector<Vertex>&& vertices, const std::vector<unsigned int>&& indices, std::vector<unsigned int>&& textures):
 	vertices_(vertices),
 	indices_(indices),
 	textures_(textures)

@@ -4,30 +4,25 @@
 #include <functional>
 #include <unordered_map>
 #include <mutex>
+#include <map>
 
 #include "Singleton.h"
 #include "IOUtils.h"
-#include "AsyncLoadObject.h"
+#include "AsyncLoader.h"
 
+#define TEXTUREMNG OPENGL_LN::TextureMng::instance()
 
 namespace OPENGL_LN
 {
 	class Texture;
 
-	class TextureMng : public Singleton<TextureMng>, public AsyncLoadObject
+	class TextureMng : public Singleton<TextureMng>, public AsyncLoader<Texture>
 	{
 	private:
 		TextureMng();
 		~TextureMng();
 	public:
-		unsigned int initOneTexture(const char* filename);
-		virtual void asyncLoad(const char* filename, const unsigned int id) override;
 		virtual void callBackHandleLoad(const void* any, const unsigned int id) override;
-	protected:
-		unsigned int genTextureId() { return _keyHash++; }
-	private:
-		unordered_map<unsigned int, Texture*> _textureContainer;
-		mutex _mut;
-		unsigned int _keyHash;
 	};
+
 }

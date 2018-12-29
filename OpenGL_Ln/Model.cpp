@@ -1,7 +1,12 @@
 #include "Model.h"
 
-OPENGL_LN::Model::Model()
+OPENGL_LN::Model::Model(unsigned int id)
 {
+}
+
+void OPENGL_LN::Model::flushSceneIntoModel(const aiScene * scene)
+{
+	processNode(scene->mRootNode, scene);
 }
 
 void OPENGL_LN::Model::processNode(aiNode * node, const aiScene * scene)
@@ -22,9 +27,9 @@ OPENGL_LN::Mesh&& OPENGL_LN::Model::processMesh(aiMesh * mesh, const aiScene * s
 {
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
-	std::vector<Texture> textures;
+	std::vector<unsigned int> textures;
 
-	for (int i = 0; i < mesh->mNumVertices; ++i)
+	for (size_t i = 0; i < mesh->mNumVertices; ++i)
 	{
 		Vertex v;
 		v.normal = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
@@ -38,7 +43,7 @@ OPENGL_LN::Mesh&& OPENGL_LN::Model::processMesh(aiMesh * mesh, const aiScene * s
 		vertices.push_back(v);
 	}
 
-	for (int i = 0; i < mesh->mNumFaces; ++i)
+	for (size_t i = 0; i < mesh->mNumFaces; ++i)
 	{
 		aiFace face = mesh->mFaces[i];
 		for (int j = 0; j < face.mNumIndices; ++j)
@@ -50,10 +55,14 @@ OPENGL_LN::Mesh&& OPENGL_LN::Model::processMesh(aiMesh * mesh, const aiScene * s
 	if (mesh->mMaterialIndex >= 0)
 	{
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-		std::vector<Texture> diffuseMaps;
+		std::vector<unsigned int> diffuseMaps;
 
 	}
 
 	// _Right
-	return Mesh(vertices, indices, textures);
+	return Mesh(std::move(vertices), std::move(indices), std::move(textures));
+}
+
+void OPENGL_LN::Model::loadTextures(aiMaterial * mat, aiTextureType type)
+{
 }

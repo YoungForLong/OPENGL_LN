@@ -8,19 +8,19 @@ OPENGL_LN::Texture::Texture(const unsigned int id):
 {
 }
 
-OPENGL_LN::Texture::Texture(const unsigned int id, unsigned char * data):
+OPENGL_LN::Texture::Texture(const unsigned int id, unsigned char * data, ImageObj* img):
 	_id(id),
 	_data(NULL)
 {
-	this->flushSingleImgIntoBuffer(data);
+	this->flushSingleImgIntoBuffer(data, img);
 }
 
-OPENGL_LN::Texture::Texture(const unsigned int id, const std::initializer_list<unsigned char*>& dataList):
-	_id(id),
-	_data(NULL)
-{
-	this->flushMixImgIntoBuffer(dataList);
-}
+//OPENGL_LN::Texture::Texture(const unsigned int id, const std::initializer_list<unsigned char*>& dataList):
+//	_id(id),
+//	_data(NULL)
+//{
+//	this->flushMixImgIntoBuffer(dataList);
+//}
 
 OPENGL_LN::Texture::~Texture()
 {

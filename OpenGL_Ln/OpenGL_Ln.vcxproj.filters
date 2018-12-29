@@ -57,9 +57,6 @@
     <ClCompile Include="TextureLoader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="AsyncLoadObject.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Resources\fragment.glsl">
@@ -115,7 +112,7 @@
     <ClInclude Include="TextureLoader.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="AsyncLoadObject.h">
+    <ClInclude Include="AsyncLoader.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

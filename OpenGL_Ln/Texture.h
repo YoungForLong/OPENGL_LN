@@ -17,8 +17,8 @@ namespace OPENGL_LN
 	{
 	public:
 		Texture(const unsigned int id);
-		explicit Texture(const unsigned int id, unsigned char* data);
-		Texture(const unsigned int id, const std::initializer_list<unsigned char*>& dataList);
+		explicit Texture(const unsigned int id, unsigned char* data, ImageObj* img);
+		// Texture(const unsigned int id, const std::initializer_list<unsigned char*>& dataList);
 		virtual ~Texture();
 		// void loadImg(const char* path);
 		void clearTextureCache();
