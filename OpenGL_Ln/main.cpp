@@ -10,10 +10,12 @@
 #include "Camera.h"
 #include "EventRegisterMng.h"
 #include "Light.h"
-#include "Material.h"
 #include <string>
 #include <time.h>
 #include "ModelLoader.h"
+#include "Model.h"
+#include "IOUtils.h"
+#include "TextureLoader.h"
 
 #ifdef linux
 #ifndef MAX_PATH
@@ -35,7 +37,7 @@ void framebuffer_size_callback(GLFWwindow* window, int w, int h)
 void mouseCallBack(GLFWwindow* winddow, double xpos, double ypos)
 {
 	double pos[] = { xpos, ypos };
-	EventRegisterMng::instance()->dispatchEvent(EventTypes::EVENT_MOUSE, GET_KEY_VOID_VAL(pos));
+	//EventRegisterMng::instance()->dispatchEvent(EventTypes::EVENT_MOUSE, GET_KEY_VOID_VAL(pos));
 }
 
 void processInput(GLFWwindow* window)
@@ -157,7 +159,7 @@ int main()
 	const GLchar* vertexShaderSource = getFileData("vertics.glsl");
 	const GLchar* fragmentShaderSource = getFileData("fragment.glsl");
 
-	float vertices[] = {
+	/*float vertices[] = {
 		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,  0.0f, 0.0f,
 		0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,  1.0f, 0.0f,
 		0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,  1.0f, 1.0f,
@@ -199,7 +201,7 @@ int main()
 		0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
 		-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,  0.0f, 0.0f,
 		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  0.0f, 1.0f
-	};
+	};*/
 	
 	/*unsigned int indices[] = {
 		0, 1, 3,
@@ -208,7 +210,7 @@ int main()
 		2, 0, 3
 	};*/
 
-	unsigned int VBO, VAO, EBO;
+	/*unsigned int VBO, VAO, EBO;
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
@@ -216,20 +218,20 @@ int main()
 	glBindVertexArray(VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);*/
 
 	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-	// position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_TRUE, 8 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	// normal vec
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-	// texture coord attribute
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	glEnableVertexAttribArray(2);
+	//// position attribute
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_TRUE, 8 * sizeof(float), (void*)0);
+	//glEnableVertexAttribArray(0);
+	//// normal vec
+	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	//glEnableVertexAttribArray(1);
+	//// texture coord attribute
+	//glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	//glEnableVertexAttribArray(2);
 
 	OPENGL_LN::Shader sr = OPENGL_LN::Shader("vertex.glsl", "fragment.glsl");
 
@@ -240,12 +242,6 @@ int main()
 	sr.use();
 
 	OPENGL_LN::Camera ca(glm::vec3(0, 0, 6));
-
-	// set material
-	OPENGL_LN::Material material("material", 32.0f);
-	material.bindDiffuseMap("box_diffuse.png");
-	material.bindSpecularMap("box_specular.png");
-	material.applyMaterial(sr);
 	
 	glEnable(GL_DEPTH_TEST);
 
@@ -274,6 +270,22 @@ int main()
 	);
 	pointLt.applyLight(sr);
 
+	unsigned int modelId = MODELMNG->initOneObj("nanosuit.obj");
+	
+	auto beginT = glfwGetTime();
+	//simplely wait loading finished
+	while (true)
+	{
+		curT = glfwGetTime();
+		if (curT - beginT > 15)
+			break;
+
+		if (MODELMNG->hasLoadFinished() && TEXTUREMNG->hasLoadFinished())
+			break;
+	}
+
+	auto model = MODELMNG->getObjbyKey(modelId);
+
 	while (!glfwWindowShouldClose(window))
 	{
 		processInput(window);
@@ -294,7 +306,6 @@ int main()
 
 		// render
 		ca.tick(deltaTime);
-		material.tick(deltaTime);
 		sr.use();
 		sr.setVal("time", curT);
 
@@ -320,21 +331,18 @@ int main()
 		);
 		lt.applyLight(sr);*/
 
-		auto caPos = ca.getPos();
-		sr.setVal("viewPos", caPos);
+		/*auto caPos = ca.getPos();
+		sr.setVal("viewPos", caPos);*/
 
-		for (int i = 0; i < 1; ++i)
-		{
-			auto model = localTransform(offsetArr[i], curT + i * 200);
-			sr.setTrans("model", glm::value_ptr(model));
-			sr.setTrans("view", glm::value_ptr(view));
-			sr.setTrans("projection", glm::value_ptr(projection));
-			glBindVertexArray(VAO);
-			glDrawArrays(GL_TRIANGLES, 0, floor(sizeof(vertices) / sizeof(float)));
-		}
+		auto modelTrans = localTransform(offsetArr[0], curT);
+		sr.setTrans("model", glm::value_ptr(modelTrans));
+		sr.setTrans("view", glm::value_ptr(view));
+		sr.setTrans("projection", glm::value_ptr(projection));
 
-		// dky?
+		model->render(&sr);
+
 		glfwSwapBuffers(window);
+
 		glfwPollEvents();
 	}
 

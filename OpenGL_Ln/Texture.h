@@ -4,9 +4,11 @@
 #include <initializer_list>
 #include <vector>
 
+#define MAX_GL_TEXTURE_UNIT_NUM 32
+
 namespace OPENGL_LN
 {
-	typedef struct ImageObj
+	struct ImageObj
 	{
 		int _width;
 		int _height;
@@ -21,14 +23,14 @@ namespace OPENGL_LN
 		// Texture(const unsigned int id, const std::initializer_list<unsigned char*>& dataList);
 		virtual ~Texture();
 		// void loadImg(const char* path);
-		void clearTextureCache();
-		virtual void tick(float dt);
-		inline unsigned int mixNum() const { return _textureArr.size(); }
+		
 		void flushSingleImgIntoBuffer(unsigned char* data, const ImageObj* image);
+
+		inline const GLuint getGLId() const { return _glId; }
 	private:
 		unsigned int _id;
 		unsigned char* _data;
 		ImageObj _image;
-		std::vector<GLuint> _textureArr;
+		GLuint _glId;
 	};
 }

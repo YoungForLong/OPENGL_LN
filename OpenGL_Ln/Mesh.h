@@ -2,6 +2,8 @@
 #include <glm\glm.hpp>
 #include <unordered_map>
 #include <vector>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 #include "Shader.h"
 
 typedef glm::vec2 vec2;
@@ -23,21 +25,26 @@ namespace OPENGL_LN
 	class Mesh
 	{
 	public:
-		explicit Mesh(const std::vector<Vertex>&& vertices, const std::vector<unsigned int>&& indices, std::vector<unsigned int>&& textures);
+		Mesh(std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices, std::vector<unsigned int>&& diffuseMaps, std::vector<unsigned int>&& specularMaps, std::vector<unsigned int>&& heightMaps, std::vector<unsigned int>&& normalMaps);
+		Mesh(aiMesh* mesh, const aiScene* scene);
 		Mesh(const Mesh& other) = delete;
 		const Mesh& operator=(const Mesh& other) = delete;
-		explicit Mesh(Mesh&& other);
+		Mesh(Mesh&& other);
 
 		void render(Shader* shader);
+
+		// virtual void clone(Mesh& dest, Mesh& src);
 		
-		virtual void clone(Mesh& dest, Mesh& src);
-	
+		void loadTextures(aiMaterial* mat, aiTextureType type, std::vector<unsigned int>& container);
 	protected:
 		virtual void init();
 		unsigned int VAO, VBO, EBO;
 	public:
 		std::vector<Vertex> vertices_;
 		std::vector<unsigned int> indices_;
-		std::vector<unsigned int> textures_;
+		std::vector<unsigned int> diffuseMaps_;
+		std::vector<unsigned int> specularMaps_;
+		std::vector<unsigned int> heightMaps_;
+		std::vector<unsigned int> normalMaps_;
 	};
 }

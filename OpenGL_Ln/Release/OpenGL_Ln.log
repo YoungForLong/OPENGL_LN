@@ -1,0 +1,51 @@
+﻿  Camera.cpp
+Camera.cpp(86): warning C4244: “+=”: 从“double”转换到“float”，可能丢失数据
+Camera.cpp(88): warning C4244: “+=”: 从“double”转换到“float”，可能丢失数据
+  EventRegisterMng.cpp
+  IOUtils.cpp
+e:\opengl_lib\opengl_prj\opengl_ln\opengl_ln\IOUtils.h(32): warning C4091: “typedef ”: 没有声明变量时忽略“OPENGL_LN::TransTexture”的左侧
+e:\opengl_lib\opengl_prj\opengl_ln\opengl_ln\IOUtils.h(39): warning C4091: “typedef ”: 没有声明变量时忽略“OPENGL_LN::IOObject”的左侧
+e:\opengl_lib\opengl_prj\opengl_ln\opengl_ln\Texture.h(16): warning C4091: “typedef ”: 没有声明变量时忽略“OPENGL_LN::ImageObj”的左侧
+IOUtils.cpp(131): warning C4018: “<”: 有符号/无符号不匹配
+IOUtils.cpp(158): warning C4018: “<”: 有符号/无符号不匹配
+  Light.cpp
+  main.cpp
+e:\opengl_lib\opengl_prj\opengl_ln\opengl_ln\IOUtils.h(32): warning C4091: “typedef ”: 没有声明变量时忽略“OPENGL_LN::TransTexture”的左侧
+e:\opengl_lib\opengl_prj\opengl_ln\opengl_ln\IOUtils.h(39): warning C4091: “typedef ”: 没有声明变量时忽略“OPENGL_LN::IOObject”的左侧
+e:\opengl_lib\opengl_prj\opengl_ln\opengl_ln\ModelLoader.h(26): warning C4373: “OPENGL_LN::ModelMng::callBackHandleLoad”: 虚函数重写“OPENGL_LN::AsyncLoader<OPENGL_LN::Model>::callBackHandleLoad”，当参数只在 const/volatile 限定符上有差异时，早期版本的编译器未进行重写
+  e:\opengl_lib\opengl_prj\opengl_ln\opengl_ln\AsyncLoader.h(28): note: 参见“OPENGL_LN::AsyncLoader<OPENGL_LN::Model>::callBackHandleLoad”的声明
+main.cpp(125): warning C4244: “参数”: 从“time_t”转换到“unsigned int”，可能丢失数据
+main.cpp(236): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+main.cpp(279): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+main.cpp(284): warning C4244: “参数”: 从“float”转换到“DWORD”，可能丢失数据
+main.cpp(325): warning C4244: “参数”: 从“double”转换到“GLsizei”，可能丢失数据
+  Mesh.cpp
+e:\opengl_lib\opengl_prj\opengl_ln\opengl_ln\Texture.h(16): warning C4091: “typedef ”: 没有声明变量时忽略“OPENGL_LN::ImageObj”的左侧
+e:\opengl_lib\opengl_prj\opengl_ln\opengl_ln\IOUtils.h(32): warning C4091: “typedef ”: 没有声明变量时忽略“OPENGL_LN::TransTexture”的左侧
+e:\opengl_lib\opengl_prj\opengl_ln\opengl_ln\IOUtils.h(39): warning C4091: “typedef ”: 没有声明变量时忽略“OPENGL_LN::IOObject”的左侧
+  Model.cpp
+e:\opengl_lib\opengl_prj\opengl_ln\opengl_ln\IOUtils.h(32): warning C4091: “typedef ”: 没有声明变量时忽略“OPENGL_LN::TransTexture”的左侧
+e:\opengl_lib\opengl_prj\opengl_ln\opengl_ln\IOUtils.h(39): warning C4091: “typedef ”: 没有声明变量时忽略“OPENGL_LN::IOObject”的左侧
+e:\opengl_lib\opengl_prj\opengl_ln\opengl_ln\Texture.h(16): warning C4091: “typedef ”: 没有声明变量时忽略“OPENGL_LN::ImageObj”的左侧
+Model.cpp(61): warning C4018: “<”: 有符号/无符号不匹配
+  ModelLoader.cpp
+e:\opengl_lib\opengl_prj\opengl_ln\opengl_ln\IOUtils.h(32): warning C4091: “typedef ”: 没有声明变量时忽略“OPENGL_LN::TransTexture”的左侧
+e:\opengl_lib\opengl_prj\opengl_ln\opengl_ln\IOUtils.h(39): warning C4091: “typedef ”: 没有声明变量时忽略“OPENGL_LN::IOObject”的左侧
+e:\opengl_lib\opengl_prj\opengl_ln\opengl_ln\ModelLoader.h(26): warning C4373: “OPENGL_LN::ModelMng::callBackHandleLoad”: 虚函数重写“OPENGL_LN::AsyncLoader<OPENGL_LN::Model>::callBackHandleLoad”，当参数只在 const/volatile 限定符上有差异时，早期版本的编译器未进行重写
+  e:\opengl_lib\opengl_prj\opengl_ln\opengl_ln\AsyncLoader.h(28): note: 参见“OPENGL_LN::AsyncLoader<OPENGL_LN::Model>::callBackHandleLoad”的声明
+  Shader.cpp
+  stb_image.cpp
+  Texture.cpp
+e:\opengl_lib\opengl_prj\opengl_ln\opengl_ln\Texture.h(16): warning C4091: “typedef ”: 没有声明变量时忽略“OPENGL_LN::ImageObj”的左侧
+  TextureLoader.cpp
+e:\opengl_lib\opengl_prj\opengl_ln\opengl_ln\IOUtils.h(32): warning C4091: “typedef ”: 没有声明变量时忽略“OPENGL_LN::TransTexture”的左侧
+e:\opengl_lib\opengl_prj\opengl_ln\opengl_ln\IOUtils.h(39): warning C4091: “typedef ”: 没有声明变量时忽略“OPENGL_LN::IOObject”的左侧
+e:\opengl_lib\opengl_prj\opengl_ln\opengl_ln\Texture.h(16): warning C4091: “typedef ”: 没有声明变量时忽略“OPENGL_LN::ImageObj”的左侧
+  glad.c
+IOUtils.obj : error LNK2001: 无法解析的外部符号 "public: char const * __thiscall Assimp::Importer::GetErrorString(void)const " (?GetErrorString@Importer@Assimp@@QBEPBDXZ)
+IOUtils.obj : error LNK2001: 无法解析的外部符号 "public: struct aiScene const * __thiscall Assimp::Importer::ReadFile(char const *,unsigned int)" (?ReadFile@Importer@Assimp@@QAEPBUaiScene@@PBDI@Z)
+IOUtils.obj : error LNK2001: 无法解析的外部符号 "public: __thiscall Assimp::Importer::~Importer(void)" (??1Importer@Assimp@@QAE@XZ)
+IOUtils.obj : error LNK2001: 无法解析的外部符号 "public: __thiscall Assimp::Importer::Importer(void)" (??0Importer@Assimp@@QAE@XZ)
+Model.obj : error LNK2001: 无法解析的外部符号 _aiGetMaterialTextureCount
+Model.obj : error LNK2001: 无法解析的外部符号 _aiGetMaterialTexture
+E:\OpenGL_Lib\opengl_prj\OpenGL_Ln\Release\OpenGL_Ln.exe : fatal error LNK1120: 6 个无法解析的外部命令

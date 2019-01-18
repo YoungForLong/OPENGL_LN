@@ -9,20 +9,18 @@
 #include "Singleton.h"
 #include "IOUtils.h"
 #include "AsyncLoader.h"
-
-#define TEXTUREMNG OPENGL_LN::TextureMng::instance()
+#include "Texture.h"
 
 namespace OPENGL_LN
 {
-	class Texture;
-
 	class TextureMng : public Singleton<TextureMng>, public AsyncLoader<Texture>
 	{
-	private:
+	public:
 		TextureMng();
 		~TextureMng();
-	public:
 		virtual void callBackHandleLoad(const void* any, const unsigned int id) override;
 	};
 
 }
+
+#define TEXTUREMNG OPENGL_LN::TextureMng::instance()

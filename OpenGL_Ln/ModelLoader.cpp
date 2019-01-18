@@ -18,5 +18,6 @@ void OPENGL_LN::ModelMng::callBackHandleLoad(const void* any, unsigned int id)
 	if (pOperate)
 	{
 		pOperate->flushSceneIntoModel(scene);
+		modifyLoadState(true);
 	}
 }

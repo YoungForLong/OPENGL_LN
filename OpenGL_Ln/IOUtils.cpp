@@ -3,6 +3,12 @@
 #include <assert.h>
 #include "Texture.h"
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
+#include <iostream>
+
 
 #ifndef MAX_PATH
 #define MAX_PATH 260
@@ -18,6 +24,7 @@ OPENGL_LN::IOUtils::IOUtils()
 {
 	_queueMut.lock();
 	_activeSignal = false;
+	_doneSignal = false;
 	_queueMut.unlock();
 
 	for (int i = 0; i < THREAD_NUM; ++i)
@@ -32,7 +39,7 @@ OPENGL_LN::IOUtils::IOUtils()
 				}
 
 				auto* obj = this->dequeue();
-				if (obj != nullptr)
+				if (obj == nullptr)
 				{
 					this->_activeSignal = false;
 					continue;
@@ -42,23 +49,24 @@ OPENGL_LN::IOUtils::IOUtils()
 				if (obj->type == IOType::IO_MODEL)
 				{
 					Assimp::Importer importer;
-
-					const aiScene* scene = importer.ReadFile(this->getFilePath(obj->file_path.c_str()),
-						aiProcess_Triangulate | aiProcess_FlipUVs);
+					auto&& filepath = this->getFilePath(obj->file_path);
+					const aiScene* scene = importer.ReadFile(filepath, aiProcess_Triangulate | aiProcess_FlipUVs);
 					if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 					{
 						auto errStr = importer.GetErrorString();
+						std::cout << errStr << endl;
 						assert(0 && "Err: ASSIMP::MODEL::LOAD::FAILED");
 					}
 					obj->callback(static_cast<const void*>(scene));
 				}
 				else if (obj->type == IOType::IO_TEXTURE)
 				{
-					auto real_path = getFilePath(obj->file_path.c_str());
+					auto&& real_path = getFilePath(obj->file_path);
 					OPENGL_LN::ImageObj* image = new OPENGL_LN::ImageObj;
-					stbi_uc* data = stbi_load(real_path, &(image->_width), &(image->_height), &(image->_channelNum), 0);
+					stbi_uc* data = stbi_load(real_path.c_str(), &(image->_width), &(image->_height), &(image->_channelNum), 0);
 					if (!data)
 					{
+						std::cout << "filename is: " << real_path << endl;
 						assert(0 && "Err: STB::IMAGE::LOAD::FAILED");
 					}
 					TransTexture* t = new TransTexture();
@@ -88,17 +96,10 @@ OPENGL_LN::IOUtils::~IOUtils()
 
 
 
-const char * IOUtils::getFilePath(const char * filename)
+string IOUtils::getFilePath(const char * filename)
 {
-	char real_path[MAX_PATH] = { 0 };
-	strcpy_s(real_path, filename);
-#ifdef WIN32
-	memset(real_path, 0, MAX_PATH);
-	const char* prefix = "../Resources/";
-	strcpy_s(real_path, prefix);
-	strcat_s(real_path, filename);
-#endif
-	return real_path;
+	string ret = string("../Resources/") + filename;
+	return ret;
 }
 
 void OPENGL_LN::IOUtils::asyncLoad(const char * filename, IOCallBack&& cb)
@@ -121,31 +122,31 @@ void OPENGL_LN::IOUtils::asyncLoad(const char * filename, IOCallBack&& cb)
 
 OPENGL_LN::IOType OPENGL_LN::IOUtils::judgeFileType(const char * filename)
 {
-	int op = -1;
+	size_t op = 0;
 	string postfix;
 	bool find = false;
-	while (op < strlen(filename))
+	size_t nameLen = strlen(filename);
+	while (op < nameLen)
 	{
-		op++;
-		if (filename[op] == '.')
+		if (filename[++op] == '.')
 		{
 			find = true;
 			continue;
 		}
-		if (find)
+		if (find && filename[op] != '\0')
 		{
 			postfix.push_back(filename[op]);
 		}
 	}
-
-	unordered_map<string, IOType> fileMap = 
+	
+	STRING_HASH_MAP(IOType) fileMap =
 	{
 		{"png", IO_TEXTURE},
 		{"jpg", IO_TEXTURE},
 		{"obj", IO_MODEL}
 	};
-
-	return fileMap[postfix];
+	
+	return fileMap[postfix.c_str()];
 }
 
 int OPENGL_LN::IOUtils::fileHash(const char * filename)

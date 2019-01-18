@@ -11,17 +11,17 @@ namespace OPENGL_LN
 	class AsyncLoader
 	{
 	public:
-		AsyncLoader() { _loadFinished = true; }
+		AsyncLoader() { _loadFinished = true; _keyHash = 0; }
 		
 		virtual ~AsyncLoader() {}
 		
 		void modifyLoadState(bool finished);
 		
-		unsigned int initOneModel(const string& filename);
+		unsigned int initOneObj(const char* filename);
 
 		__T* getObjbyKey(unsigned int key);
 
-		bool hasLoadFinished() const { return _loadFinished; }
+		virtual bool hasLoadFinished() const { return _loadFinished; }
 		
 		void asyncLoad(const char* filename, const unsigned int id);
 		
@@ -31,8 +31,8 @@ namespace OPENGL_LN
 		unsigned int genObjId() { return _keyHash++; }
 	protected:
 		std::unordered_map<unsigned int, __T*> _objContainer;
-		std::unordered_map<std::string, unsigned int> _fileMap;
-		bool _loadFinished;
+		STRING_HASH_MAP(unsigned int) _fileMap;
+		std::atomic<bool> _loadFinished;
 		std::mutex _mut;
 		std::atomic<unsigned int> _keyHash;
 	};
@@ -40,16 +40,15 @@ namespace OPENGL_LN
 	template<class __T>
 	inline void AsyncLoader<__T>::modifyLoadState(bool finished)
 	{
-		std::unique_lock<mutex> lock(_mut);
-		_loadFinished = true;
+		_loadFinished = finished;
 	}
 
 	template<class __T>
-	inline unsigned int AsyncLoader<__T>::initOneModel(const string & filename)
+	inline unsigned int AsyncLoader<__T>::initOneObj(const char* filename)
 	{
 		std::unique_lock<mutex> lock(_mut);
 
-		std::unordered_map<unsigned int, __T*>::iterator  iter = _fileMap.find(filename);
+		auto iter = _fileMap.find(filename);
 		if (iter != _fileMap.end())
 		{
 			return iter->second;
@@ -57,7 +56,7 @@ namespace OPENGL_LN
 		unsigned int id = genObjId();
 		__T* obj = new __T(id);
 
-		_textureContainer.insert(std::make_pair(id, obj));
+		_objContainer.insert(std::make_pair(id, obj));
 		_fileMap.insert(std::make_pair(filename, id));
 
 		lock.unlock();
