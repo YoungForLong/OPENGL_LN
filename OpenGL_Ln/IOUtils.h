@@ -71,6 +71,7 @@ namespace OPENGL_LN {
 		void asyncLoad(const char* filename, IOCallBack&& cb);
 		IOType judgeFileType(const char* filename);
 		int fileHash(const char* filename);
+		void syncLoad(const char* filename, IOCallBack&& cb);
 	protected:
 		IOObject* dequeue();
 	private:

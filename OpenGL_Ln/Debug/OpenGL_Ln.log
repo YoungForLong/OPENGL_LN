@@ -1,4 +1,4 @@
-﻿  Model.cpp
+﻿  Mesh.cpp
 e:\opengl_lib\opengl_prj\opengl_ln\include\glm\detail\type_vec2.hpp(45): warning C4201: 使用了非标准扩展: 无名称的结构/联合
   e:\opengl_lib\opengl_prj\opengl_ln\include\glm\detail\type_vec2.hpp(206): note: 参见对正在编译的类 模板 实例化“glm::tvec2<T,P>”的引用
 e:\opengl_lib\opengl_prj\opengl_ln\include\glm\detail\type_vec2.hpp(46): warning C4201: 使用了非标准扩展: 无名称的结构/联合
@@ -11,5 +11,8 @@ e:\opengl_lib\opengl_prj\opengl_ln\include\glm\detail\type_vec4.hpp(45): warning
   e:\opengl_lib\opengl_prj\opengl_ln\include\glm\detail\type_vec4.hpp(272): note: 参见对正在编译的类 模板 实例化“glm::tvec4<T,P>”的引用
 e:\opengl_lib\opengl_prj\opengl_ln\include\glm\detail\type_vec4.hpp(46): warning C4201: 使用了非标准扩展: 无名称的结构/联合
 e:\opengl_lib\opengl_prj\opengl_ln\include\glm\detail\type_vec4.hpp(47): warning C4201: 使用了非标准扩展: 无名称的结构/联合
+e:\opengl_lib\opengl_prj\opengl_ln\opengl_ln\mesh.cpp(36): warning C4018: “<”: 有符号/无符号不匹配
+e:\opengl_lib\opengl_prj\opengl_ln\opengl_ln\asyncloader.h(77): warning C4715: “OPENGL_LN::AsyncLoader<OPENGL_LN::Texture>::getObjbyKey”: 不是所有的控件路径都返回值
+Camera.obj : warning LNK4075: 忽略“/EDITANDCONTINUE”(由于“/OPT:LBR”规范)
   OpenGL_Ln.vcxproj -> E:\OpenGL_Lib\opengl_prj\OpenGL_Ln\Debug\OpenGL_Ln.exe
   OpenGL_Ln.vcxproj -> E:\OpenGL_Lib\opengl_prj\OpenGL_Ln\Debug\OpenGL_Ln.pdb (Full PDB)

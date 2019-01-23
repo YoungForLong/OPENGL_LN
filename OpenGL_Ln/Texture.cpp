@@ -30,6 +30,10 @@ OPENGL_LN::Texture::~Texture()
 
 void OPENGL_LN::Texture::flushSingleImgIntoBuffer(unsigned char* data, const ImageObj* image)
 {
+	_image._width = image->_width;
+	_image._height = image->_height;
+	_image._channelNum = image->_channelNum;
+
 	GLuint texture;
 	glGenTextures(1, &texture);
 

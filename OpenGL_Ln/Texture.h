@@ -3,6 +3,7 @@
 #include <glad\glad.h>
 #include <initializer_list>
 #include <vector>
+#include <mutex>
 
 #define MAX_GL_TEXTURE_UNIT_NUM 32
 

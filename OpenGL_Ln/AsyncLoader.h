@@ -81,7 +81,7 @@ namespace OPENGL_LN
 	{
 		modifyLoadState(false);
 
-		IOMNG->asyncLoad(filename, [this, id](const void* any)->void {
+		IOMNG->syncLoad(filename, [this, id](const void* any)->void {
 			this->callBackHandleLoad(any, id);
 		});
 	}

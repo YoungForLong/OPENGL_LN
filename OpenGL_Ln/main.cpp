@@ -37,7 +37,7 @@ void framebuffer_size_callback(GLFWwindow* window, int w, int h)
 void mouseCallBack(GLFWwindow* winddow, double xpos, double ypos)
 {
 	double pos[] = { xpos, ypos };
-	//EventRegisterMng::instance()->dispatchEvent(EventTypes::EVENT_MOUSE, GET_KEY_VOID_VAL(pos));
+	EventRegisterMng::instance()->dispatchEvent(EventTypes::EVENT_MOUSE, GET_KEY_VOID_VAL(pos));
 }
 
 void processInput(GLFWwindow* window)

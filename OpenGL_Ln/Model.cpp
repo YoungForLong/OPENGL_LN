@@ -8,9 +8,15 @@ OPENGL_LN::Model::Model(unsigned int id):
 
 void OPENGL_LN::Model::render(Shader * shader)
 {
-	for (auto iter = _meshes.begin(); iter != _meshes.end(); ++iter)
+	/*for (auto iter = _meshes.begin(); iter != _meshes.end(); ++iter)
 	{
 		iter->render(shader);
+	}*/
+
+	// debug
+	if (!_meshes.empty())
+	{
+		_meshes[0].render(shader);
 	}
 }
 

@@ -77,8 +77,8 @@ OPENGL_LN::Mesh::Mesh(Mesh && other)
 
 void OPENGL_LN::Mesh::render(Shader * shader)
 {
-	if (!TEXTUREMNG->hasLoadFinished())
-		return;
+	/*if (!TEXTUREMNG->hasLoadFinished())
+		return;*/
 	
 	GLuint unitCount = 0;
 	auto flushFunc = [&](const std::vector<unsigned int>& map, const std::string& refName) {
@@ -87,7 +87,8 @@ void OPENGL_LN::Mesh::render(Shader * shader)
 		{
 			auto texture = TEXTUREMNG->getObjbyKey(textureId);
 			glActiveTexture(GL_TEXTURE0 + unitCount);
-			shader->setVal((refName + std::to_string(nameCount)).c_str(), (int)unitCount);
+			auto name = refName + std::to_string(nameCount);
+			shader->setVal(name.c_str(), (int)unitCount);
 			unitCount++;
 			nameCount++;
 			glBindTexture(GL_TEXTURE_2D, texture->getGLId());

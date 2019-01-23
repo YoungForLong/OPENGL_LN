@@ -73,13 +73,15 @@ OPENGL_LN::IOUtils::IOUtils()
 					t->data = data;
 					t->image = image;
 					obj->callback(static_cast<const void*>(t));
-					stbi_image_free(data);
 					delete image;
 					image = NULL;
 					t->image = NULL;
 					delete t;
 					t = NULL;
 				}
+
+				delete obj;
+				obj = NULL;
 			}
 		});
 	}
@@ -161,6 +163,44 @@ int OPENGL_LN::IOUtils::fileHash(const char * filename)
 	}
 
 	return max(totalAscii % THREAD_NUM, 0);
+}
+
+void OPENGL_LN::IOUtils::syncLoad(const char * filename, IOCallBack && cb)
+{
+	auto type = judgeFileType(filename);
+	if (type == IOType::IO_MODEL)
+	{
+		Assimp::Importer importer;
+		auto&& filepath = this->getFilePath(filename);
+		const aiScene* scene = importer.ReadFile(filepath, aiProcess_Triangulate | aiProcess_FlipUVs);
+		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+		{
+			auto errStr = importer.GetErrorString();
+			std::cout << errStr << endl;
+			assert(0 && "Err: ASSIMP::MODEL::LOAD::FAILED");
+		}
+		cb(static_cast<const void*>(scene));
+	}
+	else if (type == IOType::IO_TEXTURE)
+	{
+		auto&& real_path = getFilePath(filename);
+		OPENGL_LN::ImageObj* image = new OPENGL_LN::ImageObj;
+		stbi_uc* data = stbi_load(real_path.c_str(), &(image->_width), &(image->_height), &(image->_channelNum), 0);
+		if (!data)
+		{
+			std::cout << "filename is: " << real_path << endl;
+			assert(0 && "Err: STB::IMAGE::LOAD::FAILED");
+		}
+		TransTexture* t = new TransTexture();
+		t->data = data;
+		t->image = image;
+		cb(static_cast<const void*>(t));
+		delete image;
+		image = NULL;
+		t->image = NULL;
+		delete t;
+		t = NULL;
+	}
 }
 
 IOObject * OPENGL_LN::IOUtils::dequeue()
